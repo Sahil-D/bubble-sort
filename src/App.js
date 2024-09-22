@@ -1,10 +1,15 @@
 import React, { useRef, useState, useMemo } from 'react';
 import './app.css';
 
+import useCounter from './hooks/Counter';
+
 const App = () => {
   const inputRef = useRef(null);
   const [numElements, setNumElements] = useState(8);
   const [buttonDisable, setButtonDisable] = useState(false);
+
+  const counter1Click = useCounter(0, 'counter 1');
+  const counter2Click = useCounter(0, 'counter 2');
 
   // delay in ms
   const delay = 500;
@@ -59,12 +64,15 @@ const App = () => {
     // picking parent containers pf all bars
     var container = document.getElementById('array');
 
+    // returned this Promise as it is
     return new Promise((resolve) => {
       // chnaging position via changing their transform
       var temp = b1.style.transform;
       b1.style.transform = b2.style.transform;
       b2.style.transform = temp;
 
+      // now this promise will keep stop next iteration till the two blocks are swapped
+      // after that resolve will called and for loop continues its action
       window.requestAnimationFrame(function () {
         setTimeout(() => {
           container.insertBefore(b2, b1);
@@ -84,11 +92,14 @@ const App = () => {
         blocks[j + 1].style.backgroundColor = 'yellow';
 
         // creating Promise to wait for delay mentioned
+        // a good practice for creating sleep and it avoid the nesting of setTimeouts and extra callbacks for each task
+        // it also stops for loop for some time
         await new Promise((resolve) =>
           setTimeout(() => {
             resolve();
           }, delay)
         );
+        // console.log('inside for loop');
 
         let value1 = Number(blocks[j].childNodes[0].innerHTML);
         let value2 = Number(blocks[j + 1].childNodes[0].innerHTML);
@@ -155,6 +166,11 @@ const App = () => {
       >
         START
       </button>
+
+      <div className="">
+        <button onClick={counter1Click}>Counter 1</button>
+        <button onClick={counter2Click}>Counter 1</button>
+      </div>
     </div>
   );
 };
